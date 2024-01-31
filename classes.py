@@ -4,3 +4,8 @@ class Workout:
         self.weight: float = weight
         self.reps: int = reps
         self.sets: int = sets
+    
+    def __str__(self):
+        return f"{self.name}, {self.weight}, {self.reps}, {self.sets}"
+    
+    def 

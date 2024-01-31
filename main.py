@@ -32,7 +32,13 @@ def display_name(window, name):
 
 
 def main():
-    
+    workouts_list = []
+    with open("workouts.csv", encoding="utf-8") as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)
+        for row in reader:
+            workout = Workout(row[0], row[1], row[2], row[3])
+            workouts_list.append(workout)
     window = create_window()
     (enter_name(window))
     

@@ -1,4 +1,4 @@
-class workout:
+class Workout:
     def __init__ (self, name: str, weight: float, reps: int, sets: int):
         self.name: str = name
         self.weight: float = weight

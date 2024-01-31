@@ -16,12 +16,14 @@ def summon_workouts(window):
     pass
     
 
-def enter_name(window):
-#create a input in the window that takes in a string
+def enter_workout_name(window):
+#create a input in the window that takes in a string and puts it in the workouts.csv file
     name = Entry()   
     name.pack()
     name.place(x=300, y=100)
     return name
+
+
 
 #create a square where name is displayed
 def display_name(window, name):

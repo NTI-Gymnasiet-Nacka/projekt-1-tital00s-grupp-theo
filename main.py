@@ -13,7 +13,7 @@ def create_window():
     return window
 
 def summon_workouts(window):
-    
+    pass
     
 
 def enter_name(window):

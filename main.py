@@ -1,11 +1,12 @@
-import csv, tkinter
+import csv
 import classes
+from tkinter import *
 
 
 
 
 def create_window():
-    window = tkinter.Tk()
+    window = Tk()
     window.title("Fitness Tracker")
     window.geometry("500x500")
     window.resizable(True, True)    
@@ -14,7 +15,7 @@ def create_window():
 
 def enter_name(window):
 #create a input in the window that takes in a string
-    name = tkinter.Entry()    
+    name = Entry()   
     name.pack()
     name.place(x=300, y=100)
     return name

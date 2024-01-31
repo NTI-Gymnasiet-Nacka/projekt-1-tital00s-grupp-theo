@@ -10,11 +10,19 @@ def create_window():
     window.geometry("500x500")
     window.resizable(True, True)    
     return window
-    
-    pass
+
+
+def enter_name(window):
+#create a input in the window that takes in a string
+    name = tkinter.Entry()    
+    name.pack()
+    name.place(x=300, y=100)
+    return name
+
 
 def main():
     window = create_window()
+    print(enter_name(window))
     
     window.mainloop()
 

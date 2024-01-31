@@ -12,6 +12,9 @@ def create_window():
     window.resizable(True, True)    
     return window
 
+def summon_workouts(window):
+    pass
+    
 
 def enter_name(window):
 #create a input in the window that takes in a string
@@ -29,6 +32,7 @@ def display_name(window, name):
 
 
 def main():
+    
     window = create_window()
     (enter_name(window))
     

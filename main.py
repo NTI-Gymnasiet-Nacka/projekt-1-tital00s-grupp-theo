@@ -21,6 +21,7 @@ def enter_name(window):
     return name
 
 
+
 def main():
     window = create_window()
     print(enter_name(window))

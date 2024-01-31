@@ -20,11 +20,17 @@ def enter_name(window):
     name.place(x=300, y=100)
     return name
 
+#create a square where name is displayed
+def display_name(window, name):
+    name_display = Label(window, text=name)
+    name_display.pack()
+    name_display.place(x=300, y=100)
+    return name_display
 
 
 def main():
     window = create_window()
-    print(enter_name(window))
+    (enter_name(window))
     
     window.mainloop()
 

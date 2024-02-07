@@ -7,5 +7,3 @@ class Workout:
     
     def __str__(self):
         return f"{self.name}, {self.weight}, {self.reps}, {self.sets}"
-    
-    def 

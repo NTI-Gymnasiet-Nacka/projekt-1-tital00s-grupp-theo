@@ -6,4 +6,10 @@ class Workout:
         self.sets: int = sets
     
     def __str__(self):
+<<<<<<< HEAD
         return f"{self.name}, {self.weight}, {self.reps}, {self.sets}"
+=======
+        return f"{self.name}, {self.weight}, {self.reps}, {self.sets}"
+    
+    
+>>>>>>> refs/remotes/origin/main

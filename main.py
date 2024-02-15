@@ -22,7 +22,7 @@ def save_workout(name_entry):
         writer = csv.writer(csvfile)
         writer.writerow([name])
 
-#create a square where name is displayed
+# create a square where name is displayed
 def convert(name_entry, window):
     convert_button = Button(window, text="Save", command=lambda: save_workout(name_entry))
     convert_button.pack()

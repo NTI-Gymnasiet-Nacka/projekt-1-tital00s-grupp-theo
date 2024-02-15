@@ -1,18 +1,21 @@
+# Import the required libraries
 from tkinter import *
 
-def create_window():
-    window = Tk()
-    window.title("Fitness Tracker")
-    window.geometry("500x500")
-    window.resizable(True, True)    
-    return window
+# Create an instance of tkinter frame
+win = Tk()
 
-def print_selection():
-    if (var1.get() == 1):
-        print("Crunches")
+# Set the size of the tkinter window
+win.geometry("700x350")
 
-window = create_window()
-var1 = IntVar()
-c1 = Checkbutton(window, text="Crunches",variable=var1, onvalue=1, offvalue=0, command=print_selection)
-c1.pack()
-window.mainloop()
+def disable_entry():
+   entry.config(state= "disabled")
+
+# Create an entry widget
+entry=Entry(win, width= 40, font= ('Helvetica 16'))
+entry.pack(pady=20)
+
+# Create a button
+button=Button(win, text="Disable Entry", font=('Arial', 12), command=disable_entry)
+button.pack()
+
+win.mainloop()

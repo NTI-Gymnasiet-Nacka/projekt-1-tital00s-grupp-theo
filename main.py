@@ -29,7 +29,7 @@ def save_workout(window, name_entry): # save the workout to the workouts.csv fil
         writer.writerow([name,0,0,0]) # write the name to the file
     workouts_list = summon_workouts() # get the workouts from the file
     print(workouts_list) # print the workouts
-    create_checkboxes(window, workouts_list, 150) # create the checkboxes
+    create_checkboxes(window, workouts_list, 200) # create the checkboxes
     return workouts_list # return the workouts
 
 #create a square where name is displayed
@@ -51,11 +51,10 @@ def summon_workouts(): # get the workouts from the workouts.csv file
 def create_checkboxes(window, workouts_list, y_placement): # create a checkbox for each workout
     for workout in workouts_list: # for each workout in the list
         var = IntVar() # create a variable
-        c = Checkbutton(window, text=workout.name, variable=var, onvalue=1, offvalue=0) # create a checkbox
+        c = Checkbutton(window, text=workout.name, variable=var, onvalue=1, offvalue=0, variable=var, command=) # create a checkbox
         c.pack() # pack the checkbox
         c.place(x=100, y=y_placement) # place the checkbox
         y_placement += 20 # increase the y placement
-    return y_placement # return the y placement
 
 def startup(window): # create the window and the checkboxes
     workouts_list = summon_workouts() # get the workouts from the file

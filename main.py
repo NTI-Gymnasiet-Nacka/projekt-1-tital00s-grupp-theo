@@ -9,6 +9,12 @@ def create_window():
     window.resizable(True, True) # Set the window to be resizable
     return window # Return the window
 
+def units_label(window): 
+    unit_label = Label(window, text="Weight                    Reps                         Sets") # Create a label
+    #place the label right above the first row of checkboxes
+    unit_label.place(x=200, y=70) # Set the position of the label
+    return unit_label
+    
 def enter_workout_name(window): # Create a label and entry for the workout name
     name_label = Label(window, text="Workout Name:") # Create a label
     name_label.pack() # Add the label to the window
@@ -89,6 +95,7 @@ def startup(window): # Start the program
     workout_entry = enter_workout_name(window) # Create the entry for the workout name
     create_checkboxes(window, workouts_list, workout_data, 100, workout_entry) # Create the checkboxes
     convert(workout_entry, window, workout_data) # Convert the workout data to a csv file
+    units_label(window) # Create the units label
 
 def main():
     window = create_window() # Create the window

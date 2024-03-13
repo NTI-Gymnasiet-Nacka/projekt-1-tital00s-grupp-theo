@@ -1,38 +1,21 @@
-import csv
-from classes import Workout
+# Import the required libraries
 from tkinter import *
 
-def create_window():
-    window = Tk()
-    window.title("Fitness Tracker")
-    window.geometry("500x500")
-    window.resizable(True, True)
-    return window
+# Create an instance of tkinter frame
+win = Tk()
 
-def enter_workout_name(window):
-    name_entry = Entry(window)
-    name_entry.place(x=300, y=100)
-    return name_entry
+# Set the size of the tkinter window
+win.geometry("700x350")
 
-def save_workout(name_entry):
-    name = name_entry.get()
-    with open("workouts.csv", "a", encoding="utf-8") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow([name])
+def disable_entry():
+   entry.config(state= "disabled")
 
-def convert(name_entry, window):
-    convert_button = Button(window, text="Save", command=lambda: save_workout(name_entry))
-    convert_button.place(x=300, y=300)
-    return convert_button
+# Create an entry widget
+entry=Entry(win, width= 40, font= ('Helvetica 16'))
+entry.pack(pady=20)
 
-def startup(window):
-    name_entry = enter_workout_name(window)
-    convert(name_entry, window)
+# Create a button
+button=Button(win, text="Disable Entry", font=('Arial', 12), command=disable_entry)
+button.pack()
 
-def main():
-    window = create_window()
-    startup(window)
-    window.mainloop()
-
-if __name__ == "__main__":
-    main()
+win.mainloop()

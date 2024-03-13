@@ -7,3 +7,6 @@ class Workout:
     
     def __str__(self):
         return f"{self.name}, {self.weight}, {self.reps}, {self.sets}"
+
+    def increase_weight(self, new_weight: float):
+        self.weight = new_weight

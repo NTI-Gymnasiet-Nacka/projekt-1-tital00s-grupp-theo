@@ -1,21 +1,40 @@
-# Import the required libraries
-from tkinter import *
+import tkinter as tk
 
-# Create an instance of tkinter frame
-win = Tk()
+class PlaceholderEntry(tk.Entry):
+    def __init__(self, master=None, placeholder="Placeholder", color='grey'):
+        super().__init__(master)
 
-# Set the size of the tkinter window
-win.geometry("700x350")
+        self.placeholder = placeholder
+        self.placeholder_color = color
+        self.default_fg_color = self['fg']
 
-def disable_entry():
-   entry.config(state= "disabled")
+        self.bind("<FocusIn>", self.foc_in)
+        self.bind("<FocusOut>", self.foc_out)
 
-# Create an entry widget
-entry=Entry(win, width= 40, font= ('Helvetica 16'))
-entry.pack(pady=20)
+        self.put_placeholder()
 
-# Create a button
-button=Button(win, text="Disable Entry", font=('Arial', 12), command=disable_entry)
-button.pack()
+    def put_placeholder(self):
+        self.insert(0, self.placeholder)
+        self['fg'] = self.placeholder_color
 
-win.mainloop()
+    def foc_in(self, *args):
+        if self['fg'] == self.placeholder_color:
+            self.delete('0', 'end')
+            self['fg'] = self.default_fg_color
+
+    def foc_out(self, *args):
+        if not self.get():
+            self.put_placeholder()
+
+# Example usage
+def main():
+    root = tk.Tk()
+    root.title("Entry with Placeholder")
+
+    entry_with_placeholder = PlaceholderEntry(root, "Enter something...")
+    entry_with_placeholder.pack(pady=10)
+
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()

@@ -1,106 +1,156 @@
 import csv
-from classes import Workout
 from tkinter import *
 
+# Create the main application window
 def create_window():
-    window = Tk() # Create a window
-    window.title("Fitness Tracker") # Set the title of the window
-    window.geometry("600x400") # Set the size of the window
-    window.resizable(True, True) # Set the window to be resizable
-    return window # Return the window
+    """Initialize the main application window."""
+    window = Tk()
+    window.title("Fitness Tracker")
+    window.geometry("600x400")
+    window.resizable(False, False)
+    return window
 
-def units_label(window): 
-    unit_label = Label(window, text="Weight                    Reps                         Sets") # Create a label
-    #place the label right above the first row of checkboxes
-    unit_label.place(x=200, y=70) # Set the position of the label
-    return unit_label
-    
-def enter_workout_name(window): # Create a label and entry for the workout name
-    name_label = Label(window, text="Workout Name:") # Create a label
-    name_label.pack() # Add the label to the window
-    name_label.place(x=50, y=20) # Set the position of the label
-    name_entry = Entry(window) # Create an entry
-    name_entry.pack() # Add the entry to the window
-    name_entry.place(x=150, y=20) # Set the position of the entry
-    return name_entry
+# Define the Workout class to hold workout data
+class Workout:
+    """A class to represent a workout with name, weight, reps, and sets."""
+    def __init__(self, name, weight="", reps="", sets=""):
+        self.name = name
+        self.weight = weight
+        self.reps = reps
+        self.sets = sets
 
-def save_workout(window, workout_entry, workout_data):
-    name = workout_entry.get() # Get the name of the workout
-    workout_entry.delete(0, END) # Clear the entry
-    if name == "": # If the name is empty, return
-        return
-    with open("workouts.csv", "a", newline="", encoding="utf-8") as csvfile: # Open the workouts.csv file
-        writer = csv.writer(csvfile) # Create a writer object
-        writer.writerow([name, 0, 0, 0])  # Assume initial 0s are placeholders for weight, sets, reps
-    workouts_list = summon_workouts() # Get the list of workouts
-    create_checkboxes(window, workouts_list, workout_data, 100, workout_entry) # Create the checkboxes
-
+# Function to load workouts from a CSV file
 def summon_workouts():
-    workouts_list = [] # Create an empty list
-    with open("workouts.csv", encoding="utf-8") as csvfile: # Open the workouts.csv file
-        reader = csv.reader(csvfile) # Create a reader object
-        next(reader)  # Skip the header row
-        for row in reader: # Iterate through the rows
-            workout = Workout(row[0], (row[1]), (row[2]), (row[3]))  # Adjusted for new Workout structure
-            workouts_list.append(workout) # Add the workout to the list
-    return workouts_list # Return the list of workouts
+    """Read workout data from 'workouts.csv' and return a list of Workout objects."""
+    workouts_list = []
+    with open("workouts.csv", mode="r", encoding="utf-8", newline="") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            workouts_list.append(Workout(row['name'], row['weight'], row['reps'], row['sets']))
+    return workouts_list
 
-def create_checkboxes(window, workouts_list, workout_data, y_placement, workout_entry): # Create checkboxes for the workouts
-    for workout in workouts_list: # Iterate through the workouts
-        var = IntVar() # Create an IntVar
-        cb = Checkbutton(window, text=workout.name, variable=var) # Create a Checkbutton
-        cb.var = var # Set the var attribute of the Checkbutton
-        cb.pack() # Add the Checkbutton to the window
-        cb.place(x=50, y=y_placement) # Set the position of the Checkbutton
+# Function to save a new workout to the CSV file
+def save_new_workout(workout_entry, workout_data):
+    """Save a new workout to 'workouts.csv' and update the UI."""
+    name = workout_entry.get().strip()
+    if name:  # Check if name is not empty
+        with open("workouts.csv", mode="a", encoding="utf-8", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow([name, "", "", ""])
+        update_ui()
+    workout_entry.delete(0, END)
 
-        # Entry fields for weight, sets, and reps
-        weight_entry = Entry(window) # Create an entry for the weight
-        sets_entry = Entry(window) # Create an entry for the sets
-        reps_entry = Entry(window) # Create an entry for the reps
+# Function to save updates to the workout data back to the CSV
+def save_updates(workout_data):
+    """Write updated workout data back to 'workouts.csv'."""
+    with open("workouts.csv", mode="w", encoding="utf-8", newline="") as csvfile:
+        fieldnames = ['name', 'weight', 'reps', 'sets']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for workout, entries in workout_data.items():
+            writer.writerow({
+                'name': workout,
+                'weight': entries['weight'].get(),
+                'reps': entries['reps'].get(),
+                'sets': entries['sets'].get()
+            })
+    update_ui()
 
-        weight_entry.place(x=200, y=y_placement) # Set the position of the weight entry
-        sets_entry.place(x=300, y=y_placement) # Set the position of the sets entry
-        reps_entry.place(x=400, y=y_placement) # Set the position of the reps entry
+# Function to update the application's UI
+def update_ui():
+    """Clear and rebuild the UI with updated data."""
+    global window, workout_data
+    for widget in window.winfo_children():
+        widget.destroy()
+    startup()
 
-        weight_entry.insert(0, "Weight") # Insert "Weight" into the weight entry
-        sets_entry.insert(0, "Sets") # Insert "Sets" into the sets entry
-        reps_entry.insert(0, "Reps") # Insert "Reps" into the reps entry
-
-        weight_entry.config(state="disabled") # Set the weight entry to be disabled
-        sets_entry.config(state="disabled") # Set the sets entry to be disabled
-        reps_entry.config(state="disabled") # Set the reps entry to be disabled
-
-        cb.config(command=lambda cb=cb, we=weight_entry, se=sets_entry, re=reps_entry: toggle_entries(cb, we, se, re)) # Set the command of the Checkbutton to toggle_entries function with the Checkbutton and entries as arguments
-
-        y_placement += 30
-
-def toggle_entries(checkbutton, weight_entry, sets_entry, reps_entry): # Toggle the state of the entries
-    if checkbutton.var.get() == 1: # If the Checkbutton is checked
-        weight_entry.config(state="normal") # Set the weight entry to be normal
-        sets_entry.config(state="normal") # Set the sets entry to be normal
-        reps_entry.config(state="normal") # Set the reps entry to be normal
+# Function to control the entry widget states based on checkbox
+def toggle_entry_state(*args, workout_data, name):
+    """Enable or disable entry widgets based on the state of their corresponding checkbox."""
+    if workout_data[name]["var"].get():
+        workout_data[name]["weight"].config(state=NORMAL)
+        workout_data[name]["reps"].config(state=NORMAL)
+        workout_data[name]["sets"].config(state=NORMAL)
     else:
-        weight_entry.config(state="disabled") # Set the weight entry to be disabled
-        sets_entry.config(state="disabled") # Set the sets entry to be disabled
-        reps_entry.config(state="disabled") # Set the reps entry to be disabled
+        workout_data[name]["weight"].config(state=DISABLED)
+        workout_data[name]["reps"].config(state=DISABLED)
+        workout_data[name]["sets"].config(state=DISABLED)
 
-def convert(workout_entry, window, workout_data): # Convert the workout data to a csv file
-    convert_button = Button(window, text="Save", command=lambda: save_workout(window, workout_entry, workout_data)) # Create a button to save the workout
-    convert_button.pack() # Add the button to the window
-    convert_button.place(x=150, y=60) # Set the position of the button
+# Validation function for entry widget input
+def only_numeric_input(P):
+    """Allow only numeric input in entry widgets."""
+    return P.isdigit() or P == ""
 
-def startup(window): # Start the program
-    workout_data = {} # Create an empty dictionary
-    workouts_list = summon_workouts() # Get the list of workouts
-    workout_entry = enter_workout_name(window) # Create the entry for the workout name
-    create_checkboxes(window, workouts_list, workout_data, 100, workout_entry) # Create the checkboxes
-    convert(workout_entry, window, workout_data) # Convert the workout data to a csv file
-    units_label(window) # Create the units label
+# Function to set up the application's UI
+def startup():
+    """Initialize the application's UI with widgets."""
+    global window, workout_data
+    workout_data = {}
+    workout_entry = enter_workout_name(window)
+    units_label(window)
+    workouts_list = summon_workouts()
+    y_placement = 100
+    for workout in workouts_list:
+        create_workout_row(window, workout, workout_data, y_placement)
+        y_placement += 30
+    Button(window, text="Add Workout", command=lambda: save_new_workout(workout_entry, workout_data)).place(x=450, y=20)
+    Button(window, text="Save Changes", command=lambda: save_updates(workout_data)).place(x=250, y=350)
 
-def main():
-    window = create_window() # Create the window
-    startup(window) # Start the program
-    window.mainloop() # Run the window
+# Helper function to create each workout row in the UI
+def create_workout_row(window, workout, workout_data, y_placement):
+    """Create a row in the UI for each workout."""
+    validation = window.register(only_numeric_input)
+    var = IntVar()
+    cb = Checkbutton(window, text=workout.name, variable=var)
+    cb.place(x=50, y=y_placement)
+    cb.config(command=lambda name=workout.name: toggle_entry_state(workout_data=workout_data, name=name))
+
+    # Create entry widgets for weight, reps, and sets
+    weight_entry = Entry(window, validate="key", validatecommand=(validation, '%P'))
+    weight_entry.place(x=200, y=y_placement)
+    weight_entry.insert(0, workout.weight)
+    weight_entry.config(state=DISABLED)
+
+    reps_entry = Entry(window, validate="key", validatecommand=(validation, '%P'))
+    reps_entry.place(x=300, y=y_placement)
+    reps_entry.insert(0, workout.reps)
+    reps_entry.config(state=DISABLED)
+
+    sets_entry = Entry(window, validate="key", validatecommand=(validation, '%P'))
+    sets_entry.place(x=400, y=y_placement)
+    sets_entry.insert(0, workout.sets)
+    sets_entry.config(state=DISABLED)
+
+    # Display recommended weight, if applicable
+    try:
+        recommended_weight = float(workout.weight) * 1.025 if workout.weight else ""
+    except ValueError:
+        recommended_weight = ""
+    rec_label = Label(window, text=f"Rec: {recommended_weight:.2f}" if recommended_weight else "")
+    rec_label.place(x=470, y=y_placement)
+
+    workout_data[workout.name] = {
+        "weight": weight_entry, 
+        "reps": reps_entry, 
+        "sets": sets_entry, 
+        "var": var
+    }
+
+# Helper functions to add labels to the UI
+def units_label(window):
+    """Label for the units (weight, reps, sets)."""
+    Label(window, text="Weight                    Reps                         Sets").place(x=200, y=70)
+
+def enter_workout_name(window):
+    """Entry widget for adding a new workout name."""
+    Label(window, text="Workout Name:").place(x=50, y=20)
+    workout_entry = Entry(window)
+    workout_entry.place(x=150, y=20)
+    return workout_entry
+
+# Initialize and run the application
+window = create_window()
+startup()
 
 if __name__ == "__main__":
-    main()
+    mainloop()
